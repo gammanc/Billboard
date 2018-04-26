@@ -8,12 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FragmentAll.onMovieSetAsFavoriteListener{
 
     private TabLayout main_tab;
     private ViewPager main_viewpager;
     private ViewPagerAdapter adapter;
+    private FragmentAll all, favs;
 
     //Lista de películas a mostrarse, que será compartida por
     //los dos fragments
@@ -24,6 +26,9 @@ public class MainActivity extends AppCompatActivity implements FragmentAll.onMov
     public void onMovieSetAsFavorite(int index, boolean fav) {
         //Se modifica si una pelicula ha sido marcada, desde el fragment
         movies.get(index).setFavorite(fav);
+
+        //all.updateFavoritesList(index, fav);
+        favs.updateFavoritesList(index, fav);
     }
 
     @Override
@@ -50,15 +55,21 @@ public class MainActivity extends AppCompatActivity implements FragmentAll.onMov
         //Se comparte con los fragment la lista de películas
         Bundle args = new Bundle();
         args.putParcelableArrayList("LIST",movies);
+        args.putBoolean("FILTER", false);
 
+        Bundle args2 = new Bundle();
+        args2.putParcelableArrayList("LIST",movies);
+        args2.putBoolean("FILTER", true);
 
-        //TODO: Filtrar peliculas por estrellas para el segunto fragment
-        FragmentAll f = new FragmentAll();
-        f.setArguments(args);
+        all = new FragmentAll();
+        favs = new FragmentAll();
+
+        all.setArguments(args);
+        favs.setArguments(args2);
 
         //Agregando los fragmentos deseados
-        adapter.addFragment(f, "");
-        adapter.addFragment(new FragmentFav(),"");
+        adapter.addFragment(all, "");
+        adapter.addFragment(favs,"");
 
         //Se vincula el TabLayout con el ViewPager
         main_viewpager.setAdapter(adapter);
@@ -76,5 +87,7 @@ public class MainActivity extends AppCompatActivity implements FragmentAll.onMov
         String TAG = "MSG";
         movies.add(new Movie("Avengers: Infinity War","2:30",R.drawable.img1,"Lastest Marvel MCU Movie", false));
         movies.add(new Movie("Jurassic World : Fallen Kingdom","2:00",R.drawable.img2,"Lastest Jurassic World Movie", false));
+        movies.add(new Movie("Ready Player One","2:00",R.drawable.img3,"Lastest Dwayne Jonhson Movie", false));
+        movies.add(new Movie("Rampage","2:00",R.drawable.img4,"Lastest Dwayne Jonhson Movie", false));
     }
 }
